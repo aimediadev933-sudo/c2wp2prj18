@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPv6 Deployment Workshop - BdREN</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #F28C28;
+            --secondary: #E88C2D;
+            --body: #FCF5EC;
+            --text: #1D1D1B;
+            --secondary-dark: #9F4B14;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background-color: var(--body);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 2rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.05) 10px,
+                rgba(255,255,255,0.05) 20px
+            );
+            animation: slide 20s linear infinite;
+        }
+
+        @keyframes slide {
+            0% { transform: translateX(-50px); }
+            100% { transform: translateX(50px); }
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logos {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            height: 60px;
+            width: auto;
+            background: white;
+            padding: 8px;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .hero-content h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .hero-content .subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+
+        .workshop-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .detail-card {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .detail-card h3 {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 0.5rem;
+        }
+
+        .detail-card p {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        main {
+            padding: 3rem 0;
+        }
+
+        .section {
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            color: var(--secondary-dark);
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            margin: 1rem auto;
+            border-radius: 2px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-left: 5px solid var(--primary);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .card h3 {
+            color: var(--secondary-dark);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+
+        .card p, .card li {
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+
+        .card ul {
+            margin-left: 1.5rem;
+        }
+
+        /* Statistics */
+        .stats {
+            background: linear-gradient(135deg, var(--secondary-dark), var(--primary));
+            color: white;
+            padding: 3rem 0;
+            margin: 3rem 0;
+            border-radius: 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 2rem;
+            text-align: center;
+        }
+
+        .stat-item h3 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .stat-item p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Countries Section */
+        .countries {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .country-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .country-tag {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 0.8rem 1rem;
+            border-radius: 25px;
+            text-align: center;
+            font-weight: 600;
+            transition: transform 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .country-tag:hover {
+            transform: scale(1.05);
+        }
+
+        /* SDGs */
+        .sdg-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .sdg-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            text-align: center;
+            border-top: 4px solid var(--primary);
+            transition: transform 0.3s ease;
+        }
+
+        .sdg-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .sdg-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(180deg, var(--primary), var(--secondary));
+            border-radius: 2px;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+            padding-left: 2rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -10px;
+            top: 0.5rem;
+            width: 20px;
+            height: 20px;
+            background: var(--primary);
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: 0 0 0 2px var(--primary);
+        }
+
+        .timeline-item h4 {
+            color: var(--secondary-dark);
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--text);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h4 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .footer-section p {
+            opacity: 0.8;
+            line-height: 1.8;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+
+            .hero-content .subtitle {
+                font-size: 1.1rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .header-top {
+                justify-content: center;
+                text-align: center;
+            }
+
+            .logos {
+                justify-content: center;
+            }
+
+            .logo {
+                height: 50px;
+            }
+
+            .workshop-details {
+                grid-template-columns: 1fr;
+            }
+
+            .timeline {
+                padding-left: 1rem;
+            }
+
+            .timeline-item {
+                padding-left: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 15px;
+            }
+
+            .card {
+                padding: 1.5rem;
+            }
+
+            .stat-item h3 {
+                font-size: 2rem;
+            }
+
+            .country-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .logos {
+                gap: 1rem;
+            }
+
+            .logo {
+                height: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="header-top">
+                    <div class="logos">
+                        <img src="images/logos/tein-logo.png" alt="TEIN*CC" class="logo">
+                        <img src="images/logos/asia-connect-logo.png" alt="Asi@Connect" class="logo">
+                        <img src="images/logos/eu-logo.png" alt="European Union" class="logo">
+                    </div>
+                </div>
+                
+                <div class="hero-content">
+                    <h1>IPv6 Deployment Workshop</h1>
+                    <p class="subtitle">Advanced Training for Research & Education Networks</p>
+                    <p>Organized by Bangladesh Research and Education Network (BdREN)</p>
+                    
+                    <div class="workshop-details">
+                        <div class="detail-card">
+                            <h3>Duration</h3>
+                            <p>31 July - 2 August 2018</p>
+                        </div>
+                        <div class="detail-card">
+                            <h3>Location</h3>
+                            <p>Dhaka, Bangladesh</p>
+                        </div>
+                        <div class="detail-card">
+                            <h3>Participants</h3>
+                            <p>32 Trainees</p>
+                        </div>
+                        <div class="detail-card">
+                            <h3>Countries</h3>
+                            <p>24 Nations</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <section class="section">
+                <h2 class="section-title">Workshop Impact</h2>
+                <div class="stats">
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <h3>29</h3>
+                            <p>Engineers Trained</p>
+                        </div>
+                        <div class="stat-item">
+                            <h3>24</h3>
+                            <p>Countries Represented</p>
+                        </div>
+                        <div class="stat-item">
+                            <h3>13</h3>
+                            <p>International Participants</p>
+                        </div>
+                        <div class="stat-item">
+                            <h3>3</h3>
+                            <p>Intensive Days</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2 class="section-title">Participating Countries</h2>
+                <div class="countries">
+                    <p style="text-align: center; margin-bottom: 2rem; font-size: 1.1rem; color: var(--secondary-dark);">
+                        Engineers from across Asia participated in this comprehensive IPv6 training program
+                    </p>
+                    <div class="country-grid">
+                        <div class="country-tag">🇧🇩 Bangladesh</div>
+                        <div class="country-tag">🇦🇫 Afghanistan</div>
+                        <div class="country-tag">🇧🇹 Bhutan</div>
+                        <div class="country-tag">🇳🇵 Nepal</div>
+                        <div class="country-tag">🇲🇲 Myanmar</div>
+                        <div class="country-tag">🇲🇳 Mongolia</div>
+                        <div class="country-tag">🇱🇦 Laos</div>
+                        <div class="country-tag">🇰🇭 Cambodia</div>
+                        <div class="country-tag">🇲🇾 Malaysia</div>
+                        <div class="country-tag">🇮🇳 India</div>
+                        <div class="country-tag">🇮🇩 Indonesia</div>
+                        <div class="country-tag">🇵🇭 Philippines</div>
+                        <div class="country-tag">🇵🇰 Pakistan</div>
+                        <div class="country-tag">🇱🇰 Sri Lanka</div>
+                        <div class="country-tag">🇹🇭 Thailand</div>
+                        <div class="country-tag">🇻🇳 Vietnam</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2 class="section-title">Training Program</h2>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <h4>Day 1: IPv6 Foundations</h4>
+                        <p>IPv6 introduction, addressing schemes, and OSPFv3 theory with hands-on laboratory exercises</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4>Day 2: Advanced Routing</h4>
+                        <p>BGP theory and comprehensive labs covering iBGP, eBGP, Route Reflectors, and peer groups, plus IPv6 deployment planning</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4>Day 3: Real-world Applications</h4>
+                        <p>IPv6 in WLAN environments, security configurations, server setup, troubleshooting techniques, and certification ceremony</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2 class="section-title">Key Achievements</h2>
+                <div class="grid">
+                    <div class="card">
+                        <h3>Technical Excellence</h3>
+                        <p>Comprehensive training on IPv6 deployment covering network planning, dual-stack operations, advanced routing protocols (OSPFv3, BGP), and security best practices.</p>
+                    </div>
+                    <div class="card">
+                        <h3>Hands-on Experience</h3>
+                        <p>Practical laboratory sessions with real-world scenarios, enabling participants to gain confidence in IPv6 deployment across various network environments.</p>
+                    </div>
+                    <div class="card">
+                        <h3>Knowledge Transfer</h3>
+                        <p>All 29 participants received official certificates and comprehensive lab materials, empowering them to serve as IPv6 advocates in their home institutions.</p>
+                    </div>
+                    <div class="card">
+                        <h3>Regional Collaboration</h3>
+                        <p>Strengthened networking relationships between Asian NRENs, fostering ongoing collaboration in IPv6 deployment initiatives.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2 class="section-title">Sustainable Development Goals</h2>
+                <div class="sdg-grid">
+                    <div class="sdg-card">
+                        <div class="sdg-number">SDG 4</div>
+                        <h4>Quality Education</h4>
+                        <p>Advanced technical training and capacity building for network engineers across the region</p>
+                    </div>
+                    <div class="sdg-card">
+                        <div class="sdg-number">SDG 9</div>
+                        <h4>Industry, Innovation & Infrastructure</h4>
+                        <p>Strengthening network infrastructure capabilities and promoting technological innovation</p>
+                    </div>
+                    <div class="sdg-card">
+                        <div class="sdg-number">SDG 17</div>
+                        <h4>Partnerships for the Goals</h4>
+                        <p>Building international partnerships between research and education networks</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2 class="section-title">Future Impact</h2>
+                <div class="grid">
+                    <div class="card">
+                        <h3>Local Replication</h3>
+                        <ul>
+                            <li>Participants encouraged to replicate workshops in home institutions</li>
+                            <li>Knowledge multiplication across regional networks</li>
+                            <li>Sustainable capacity building model</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>Enhanced Network Readiness</h3>
+                        <ul>
+                            <li>Improved IPv6 deployment capabilities</li>
+                            <li>Better prepared for IPv4 address exhaustion</li>
+                            <li>Advanced troubleshooting skills</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>Continuous Improvement</h3>
+                        <ul>
+                            <li>Participant feedback integration</li>
+                            <li>Enhanced logistics and facilities</li>
+                            <li>Ongoing collaboration with TEIN*CC</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Organizer</h4>
+                    <p>Bangladesh Research and Education Network (BdREN)<br>
+                    University Grants Commission (UGC), Bangladesh</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Support & Collaboration</h4>
+                    <p>TEIN*CC (Trans-Eurasia Information Network Cooperation Center)<br>
+                    Asi@Connect Program<br>
+                    European Union Funding</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Project Category</h4>
+                    <p>WP2 - 2nd Call<br>
+                    Advanced IPv6 Deployment Training<br>
+                    Regional Capacity Building Initiative</p>
+                </div>
+            </div>
+            <div style="border-top: 1px solid #333; padding-top: 1rem; margin-top: 2rem;">
+                <p>&copy; 2018 Bangladesh Research and Education Network (BdREN). Workshop supported by Asi@Connect and European Union.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
